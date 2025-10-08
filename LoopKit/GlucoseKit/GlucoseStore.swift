@@ -718,13 +718,43 @@ extension GlucoseStore {
     ///   - result: The calculated effect values, or an empty array if the glucose data isn't suitable for momentum calculation, or error.
     public func getRecentMomentumEffect(for date: Date? = nil, _ completion: @escaping (_ result: Result<[GlucoseEffect], Error>) -> Void) {
 
-        getGlucoseSamples(start: (date ?? Date()).addingTimeInterval(-momentumDataInterval)) { (result) in
+        let standardStart = (date ?? Date()).addingTimeInterval(-momentumDataInterval)
+        getGlucoseSamples(start: standardStart.addingTimeInterval(-GlucoseMath.defaultDelta)) { (result) in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let samples):
-                let effects = samples.linearMomentumEffect()
-                completion(.success(effects))
+                guard samples.count > 0, samples.first!.startDate < standardStart else {
+                    // we don't have extra data points for calculating momentum
+                    completion(.success(samples.linearMomentumEffect()))
+                    return
+                }
+                
+                // the standard effect without extra data points
+                let effects = samples.filter{$0.startDate >= standardStart}.linearMomentumEffect()
+                
+                guard effects.count > 1 else {
+                    completion(.success(effects))
+                    return
+                }
+                
+                let mgdL : HKUnit = .milligramsPerDeciliter
+                let delta = effects.last!.quantity.doubleValue(for: mgdL ) - effects.first!.quantity.doubleValue(for: mgdL)
+                
+                guard delta > 0 else {
+                    completion(.success(effects))
+                    return
+                }
+                
+                let longerEffects = samples.linearMomentumEffect()
+                guard longerEffects.count > 1 else {
+                    completion(.success(effects))
+                    return
+
+                }
+
+                let longerDelta = longerEffects.last!.quantity.doubleValue(for: mgdL ) - longerEffects.first!.quantity.doubleValue(for: mgdL)
+                completion(.success(longerDelta < delta ? longerEffects : effects))
             }
         }
     }

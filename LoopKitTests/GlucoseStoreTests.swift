@@ -15,6 +15,16 @@ import CoreData
 class GlucoseStoreTests: PersistenceControllerTestCase {
     var healthStore: HKHealthStoreMock!
     var glucoseStore: GlucoseStore!
+    
+    let device = HKDevice(name: "Unit Test Mock CGM",
+        manufacturer: "Device Manufacturer",
+        model: "Device Model",
+        hardwareVersion: "Device Hardware Version",
+        firmwareVersion: "Device Firmware Version",
+        softwareVersion: "Device Software Version",
+        localIdentifier: "Device Local Identifier",
+        udiDeviceIdentifier: "Device UDI Device Identifier")
+
 
     override func setUp() {
         super.setUp()
@@ -36,30 +46,17 @@ class GlucoseStoreTests: PersistenceControllerTestCase {
         super.tearDown()
     }
     
-    func testLatestGlucoseIsSetAfterStoreAndClearedAfterPurge() {
-        let storeCompletion = expectation(description: "Storage completion")
-        let storedQuantity = HKQuantity(unit: .milligramsPerDeciliter, doubleValue: 80)
-        let device = HKDevice(name: "Unit Test Mock CGM",
-            manufacturer: "Device Manufacturer",
-            model: "Device Model",
-            hardwareVersion: "Device Hardware Version",
-            firmwareVersion: "Device Firmware Version",
-            softwareVersion: "Device Software Version",
-            localIdentifier: "Device Local Identifier",
-            udiDeviceIdentifier: "Device UDI Device Identifier")
-        let sample = NewGlucoseSample(date: Date(), quantity: storedQuantity, condition: nil, trend: nil, trendRate: nil, isDisplayOnly: false, wasUserEntered: false, syncIdentifier: "random", device: device)
-        glucoseStore.addGlucoseSamples([sample]) { (result) in
-            switch result {
-            case .failure(let error):
-                XCTFail("Unexpected failure: \(error)")
-            case .success(let samples):
-                XCTAssertEqual(storedQuantity, samples.first!.quantity)
-            }
-            storeCompletion.fulfill()
-        }
-        wait(for: [storeCompletion], timeout: 2)
-        XCTAssertEqual(storedQuantity, self.glucoseStore.latestGlucose?.quantity)
+    func makeQuantity(_ mgdLValue: Double) -> HKQuantity {
+        HKQuantity(unit: .milligramsPerDeciliter, doubleValue: mgdLValue)
+    }
+    
+    func makeGlucoseSample(_ date: Date, _ mgdLValue: Double) -> NewGlucoseSample {
+        return NewGlucoseSample(date: date, quantity: makeQuantity(mgdLValue), condition: nil, trend: nil, trendRate: nil, isDisplayOnly: false, wasUserEntered: false, syncIdentifier: "random-" + date.description, device: device)
 
+        
+    }
+    
+    fileprivate func purgeStore() {
         let purgeCompletion = expectation(description: "Storage completion")
         
         let predicate = HKQuery.predicateForObjects(from: [device])
@@ -70,7 +67,84 @@ class GlucoseStoreTests: PersistenceControllerTestCase {
             purgeCompletion.fulfill()
         }
         wait(for: [purgeCompletion], timeout: 2)
+    }
+    
+    func testLatestGlucoseIsSetAfterStoreAndClearedAfterPurge() {
+        let storeCompletion = expectation(description: "Storage completion")
+        glucoseStore.addGlucoseSamples([makeGlucoseSample(Date(), 80)]) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail("Unexpected failure: \(error)")
+            case .success(let samples):
+                XCTAssertEqual(self.makeQuantity(80), samples.first!.quantity)
+            }
+            storeCompletion.fulfill()
+        }
+        wait(for: [storeCompletion], timeout: 2)
+        XCTAssertEqual(makeQuantity(80), self.glucoseStore.latestGlucose?.quantity)
+
+        purgeStore()
         XCTAssertNil(self.glucoseStore.latestGlucose)
+    }
+    
+    
+    func testPositiveGlucoseMomentumEffect() {
+        let storeCompletion = expectation(description: "Storage completion")
+        let now = Date().dateFlooredToTimeInterval(GlucoseMath.defaultDelta)
+        
+        glucoseStore.addGlucoseSamples([makeGlucoseSample(now.addingTimeInterval(-3 * GlucoseMath.defaultDelta), 110), makeGlucoseSample(now.addingTimeInterval(-2 * GlucoseMath.defaultDelta), 80), makeGlucoseSample(now.addingTimeInterval(-GlucoseMath.defaultDelta), 80), makeGlucoseSample(now, 110)]) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail("Unexpected failure: \(error)")
+            case .success(_):
+                self.glucoseStore.getRecentMomentumEffect(for: now.addingTimeInterval(.minutes(1))) { (result) in
+                    switch result {
+                    case .failure(let error):
+                        XCTFail("Unexpected failure: \(error)")
+                    case .success(let effect):
+                        if effect.count > 1 {
+                            XCTAssertEqual(effect.first!.quantity.doubleValue(for: .milligramsPerDeciliter), effect.last!.quantity.doubleValue(for: .milligramsPerDeciliter), accuracy: 0.001)
+                        } else {
+                            XCTFail("Insufficient effects found: \(effect)")
+                        }
+                    }
+                }
+            }
+            storeCompletion.fulfill()
+        }
+        wait(for: [storeCompletion], timeout: 10)
+        
+        purgeStore()
+        
+    }
+    
+    func testNegativeGlucoseMomentumEffect() {
+        let storeCompletion = expectation(description: "Storage completion")
+        let now = Date().dateFlooredToTimeInterval(GlucoseMath.defaultDelta)
+        
+        glucoseStore.addGlucoseSamples([makeGlucoseSample(now.addingTimeInterval(-3 * GlucoseMath.defaultDelta), 80), makeGlucoseSample(now.addingTimeInterval(-2 * GlucoseMath.defaultDelta), 110), makeGlucoseSample(now.addingTimeInterval(-GlucoseMath.defaultDelta), 110), makeGlucoseSample(now, 80)]) { (result) in
+            switch result {
+            case .failure(let error):
+                XCTFail("Unexpected failure: \(error)")
+            case .success(_):
+                self.glucoseStore.getRecentMomentumEffect(for: now.addingTimeInterval(.minutes(1))) { (result) in
+                    switch result {
+                    case .failure(let error):
+                        XCTFail("Unexpected failure: \(error)")
+                    case .success(let effect):
+                        if effect.count > 1 {
+                            XCTAssertEqual(effect[1].quantity.doubleValue(for: .milligramsPerDeciliter) - effect[0].quantity.doubleValue(for: .milligramsPerDeciliter), -15.0, accuracy: 0.001)
+                        } else {
+                            XCTFail("Insufficient effects found: \(effect)")
+                        }
+                    }
+                }
+            }
+            storeCompletion.fulfill()
+        }
+        wait(for: [storeCompletion], timeout: 10)
+        
+        purgeStore()
     }
 }
 
