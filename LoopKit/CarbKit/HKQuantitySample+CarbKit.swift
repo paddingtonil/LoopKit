@@ -13,6 +13,7 @@ let LegacyMetadataKeyAbsorptionTime = "com.loudnate.CarbKit.HKMetadataKey.Absorp
 let MetadataKeyAbsorptionTime = "com.loopkit.AbsorptionTime"
 let MetadataKeyUserCreatedDate = "com.loopkit.CarbKit.HKMetadataKey.UserCreatedDate"
 let MetadataKeyUserUpdatedDate = "com.loopkit.CarbKit.HKMetadataKey.UserUpdatedDate"
+let MetadataKeyIsFPU = "com.loopkit.CarbKit.HKMetadataKey.IsFPU"
 
 extension HKQuantitySample {
     public var foodType: String? {
@@ -34,5 +35,14 @@ extension HKQuantitySample {
 
     public var userUpdatedDate: Date? {
         return metadata?[MetadataKeyUserUpdatedDate] as? Date
+    }
+
+    /// Whether this entry represents fat-protein-unit (FPU) carbs rather than
+    /// real carbohydrate. FPU carbs are a dosing device: they are not expected to
+    /// raise glucose the way food carbs do, so consumers may choose to exclude
+    /// them from glucose-prediction-driven dose recommendations.
+    /// Absent metadata (any entry not written as FPU) reads as `false`.
+    public var isFPU: Bool {
+        return metadata?[MetadataKeyIsFPU] as? Bool ?? false
     }
 }

@@ -19,12 +19,20 @@ public struct NewCarbEntry: CarbEntry, Equatable, RawRepresentable {
     public let foodType: String?
     public let absorptionTime: TimeInterval?
 
-    public init(date: Date = Date(), quantity: HKQuantity, startDate: Date, foodType: String?, absorptionTime: TimeInterval?) {
+    /// Marks this entry as fat-protein-unit (FPU) carbs rather than real
+    /// carbohydrate. FPU carbs are a dosing device — they are not expected to
+    /// raise glucose the way food carbs do, so consumers may exclude them from
+    /// prediction-driven dose recommendations. Defaults to `false` so every
+    /// existing call site keeps its current meaning.
+    public let isFPU: Bool
+
+    public init(date: Date = Date(), quantity: HKQuantity, startDate: Date, foodType: String?, absorptionTime: TimeInterval?, isFPU: Bool = false) {
         self.date = date
         self.quantity = quantity
         self.startDate = startDate
         self.foodType = foodType
         self.absorptionTime = absorptionTime
+        self.isFPU = isFPU
     }
 
     public init?(rawValue: RawValue) {
@@ -41,7 +49,9 @@ public struct NewCarbEntry: CarbEntry, Equatable, RawRepresentable {
             quantity: HKQuantity(unit: .gram(), doubleValue: grams),
             startDate: startDate,
             foodType: rawValue["foodType"] as? String,
-            absorptionTime: rawValue["absorptionTime"] as? TimeInterval
+            absorptionTime: rawValue["absorptionTime"] as? TimeInterval,
+            // Absent in raw values written before FPU support — treat as normal carbs.
+            isFPU: rawValue["isFPU"] as? Bool ?? false
         )
     }
 
@@ -54,6 +64,10 @@ public struct NewCarbEntry: CarbEntry, Equatable, RawRepresentable {
 
         rawValue["foodType"] = foodType
         rawValue["absorptionTime"] = absorptionTime
+        // Only written when set, so raw values for normal carbs are unchanged.
+        if isFPU {
+            rawValue["isFPU"] = true
+        }
 
         return rawValue
     }

@@ -20,6 +20,8 @@ public struct SyncCarbObject: Codable, Equatable {
     public let createdByCurrentApp: Bool
     public let foodType: String?
     public let grams: Double
+    /// Fat-protein-unit carbs (dosing device, not real carbohydrate).
+    public let isFPU: Bool
     public let startDate: Date
     public let uuid: UUID?
     public let provenanceIdentifier: String
@@ -36,6 +38,7 @@ public struct SyncCarbObject: Codable, Equatable {
                 createdByCurrentApp: Bool,
                 foodType: String?,
                 grams: Double,
+                isFPU: Bool = false,
                 startDate: Date,
                 uuid: UUID?,
                 provenanceIdentifier: String,
@@ -51,6 +54,7 @@ public struct SyncCarbObject: Codable, Equatable {
         self.createdByCurrentApp = createdByCurrentApp
         self.foodType = foodType
         self.grams = grams
+        self.isFPU = isFPU
         self.startDate = startDate
         self.uuid = uuid
         self.provenanceIdentifier = provenanceIdentifier
@@ -65,6 +69,30 @@ public struct SyncCarbObject: Codable, Equatable {
     }
 
     public var quantity: HKQuantity { HKQuantity(unit: .gram(), doubleValue: grams) }
+
+    /// Explicit decoding so payloads encoded before FPU support (which carry no
+    /// `isFPU` key) still decode — the synthesized decoder would throw
+    /// `keyNotFound` for a non-optional property even though it has a default.
+    /// Encoding stays synthesized; older peers ignore the extra key.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.absorptionTime = try container.decodeIfPresent(TimeInterval.self, forKey: .absorptionTime)
+        self.createdByCurrentApp = try container.decode(Bool.self, forKey: .createdByCurrentApp)
+        self.foodType = try container.decodeIfPresent(String.self, forKey: .foodType)
+        self.grams = try container.decode(Double.self, forKey: .grams)
+        self.isFPU = try container.decodeIfPresent(Bool.self, forKey: .isFPU) ?? false
+        self.startDate = try container.decode(Date.self, forKey: .startDate)
+        self.uuid = try container.decodeIfPresent(UUID.self, forKey: .uuid)
+        self.provenanceIdentifier = try container.decode(String.self, forKey: .provenanceIdentifier)
+        self.syncIdentifier = try container.decodeIfPresent(String.self, forKey: .syncIdentifier)
+        self.syncVersion = try container.decodeIfPresent(Int.self, forKey: .syncVersion)
+        self.userCreatedDate = try container.decodeIfPresent(Date.self, forKey: .userCreatedDate)
+        self.userUpdatedDate = try container.decodeIfPresent(Date.self, forKey: .userUpdatedDate)
+        self.userDeletedDate = try container.decodeIfPresent(Date.self, forKey: .userDeletedDate)
+        self.operation = try container.decode(Operation.self, forKey: .operation)
+        self.addedDate = try container.decodeIfPresent(Date.self, forKey: .addedDate)
+        self.supercededDate = try container.decodeIfPresent(Date.self, forKey: .supercededDate)
+    }
 }
 
 extension SyncCarbObject {
@@ -73,6 +101,7 @@ extension SyncCarbObject {
                   createdByCurrentApp: managedObject.createdByCurrentApp,
                   foodType: managedObject.foodType,
                   grams: managedObject.grams,
+                  isFPU: managedObject.isFPU,
                   startDate: managedObject.startDate,
                   uuid: managedObject.uuid,
                   provenanceIdentifier: managedObject.provenanceIdentifier,

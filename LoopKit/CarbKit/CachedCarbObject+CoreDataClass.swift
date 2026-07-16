@@ -72,6 +72,7 @@ extension CachedCarbObject {
         self.createdByCurrentApp = true
         self.foodType = entry.foodType
         self.grams = entry.quantity.doubleValue(for: .gram())
+        self.isFPU = entry.isFPU
         self.startDate = entry.startDate
         self.uuid = nil
 
@@ -94,6 +95,7 @@ extension CachedCarbObject {
         self.createdByCurrentApp = sample.createdByCurrentApp
         self.foodType = sample.foodType
         self.grams = sample.quantity.doubleValue(for: .gram())
+        self.isFPU = sample.isFPU
         self.startDate = sample.startDate
         self.uuid = sample.uuid
 
@@ -120,6 +122,7 @@ extension CachedCarbObject {
         self.createdByCurrentApp = object.createdByCurrentApp
         self.foodType = entry.foodType
         self.grams = entry.quantity.doubleValue(for: .gram())
+        self.isFPU = entry.isFPU
         self.startDate = entry.startDate
         self.uuid = nil
 
@@ -142,6 +145,7 @@ extension CachedCarbObject {
         self.createdByCurrentApp = sample.createdByCurrentApp
         self.foodType = sample.foodType
         self.grams = sample.quantity.doubleValue(for: .gram())
+        self.isFPU = sample.isFPU
         self.startDate = sample.startDate
         self.uuid = sample.uuid
 
@@ -164,6 +168,7 @@ extension CachedCarbObject {
         self.createdByCurrentApp = object.createdByCurrentApp
         self.foodType = object.foodType
         self.grams = object.grams
+        self.isFPU = object.isFPU
         self.startDate = object.startDate
         self.uuid = object.uuid
 
@@ -189,6 +194,7 @@ extension CachedCarbObject {
         self.createdByCurrentApp = object.createdByCurrentApp
         self.foodType = object.foodType
         self.grams = object.grams
+        self.isFPU = object.isFPU
         self.startDate = object.startDate
         self.uuid = object.uuid
 
@@ -214,6 +220,10 @@ extension CachedCarbObject {
 
         metadata[HKMetadataKeyFoodType] = foodType
         metadata[MetadataKeyAbsorptionTime] = absorptionTime
+        // Only tag FPU entries, so samples for normal carbs are unchanged.
+        if isFPU {
+            metadata[MetadataKeyIsFPU] = true
+        }
 
         metadata[HKMetadataKeySyncIdentifier] = syncIdentifier
         metadata[HKMetadataKeySyncVersion] = syncVersion
@@ -239,6 +249,7 @@ extension CachedCarbObject {
         self.createdByCurrentApp = entry.createdByCurrentApp
         self.foodType = entry.foodType
         self.grams = entry.quantity.doubleValue(for: .gram())
+        self.isFPU = entry.isFPU
         self.startDate = entry.startDate
         self.uuid = entry.uuid
 

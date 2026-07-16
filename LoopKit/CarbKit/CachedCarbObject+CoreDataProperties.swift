@@ -20,6 +20,9 @@ extension CachedCarbObject {
     @NSManaged public var createdByCurrentApp: Bool
     @NSManaged public var foodType: String?
     @NSManaged public var grams: Double
+    /// Fat-protein-unit carbs (dosing device, not real carbohydrate).
+    /// Added in Modelv5; defaults to NO for rows migrated from Modelv4.
+    @NSManaged public var isFPU: Bool
     @NSManaged public var startDate: Date
     @NSManaged public var uuid: UUID?
     @NSManaged public var provenanceIdentifier: String

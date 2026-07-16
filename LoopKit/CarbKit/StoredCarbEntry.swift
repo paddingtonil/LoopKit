@@ -32,6 +32,12 @@ public struct StoredCarbEntry: CarbEntry, Equatable {
     public let absorptionTime: TimeInterval?
     public let createdByCurrentApp: Bool
 
+    /// Marks this entry as fat-protein-unit (FPU) carbs rather than real
+    /// carbohydrate. FPU carbs are a dosing device — they are not expected to
+    /// raise glucose the way food carbs do, so consumers may exclude them from
+    /// prediction-driven dose recommendations. Defaults to `false`.
+    public let isFPU: Bool
+
     // MARK: - User dates
 
     public let userCreatedDate: Date?
@@ -47,6 +53,7 @@ public struct StoredCarbEntry: CarbEntry, Equatable {
         foodType: String? = nil,
         absorptionTime: TimeInterval? = nil,
         createdByCurrentApp: Bool = true,
+        isFPU: Bool = false,
         userCreatedDate: Date? = nil,
         userUpdatedDate: Date? = nil
     ) {
@@ -59,6 +66,7 @@ public struct StoredCarbEntry: CarbEntry, Equatable {
         self.foodType = foodType
         self.absorptionTime = absorptionTime
         self.createdByCurrentApp = createdByCurrentApp
+        self.isFPU = isFPU
         self.userCreatedDate = userCreatedDate
         self.userUpdatedDate = userUpdatedDate
     }
@@ -76,6 +84,7 @@ extension StoredCarbEntry {
             foodType: managedObject.foodType,
             absorptionTime: managedObject.absorptionTime,
             createdByCurrentApp: managedObject.createdByCurrentApp,
+            isFPU: managedObject.isFPU,
             userCreatedDate: managedObject.userCreatedDate,
             userUpdatedDate: managedObject.userUpdatedDate
         )
@@ -95,6 +104,8 @@ extension StoredCarbEntry: Codable {
             foodType: try container.decodeIfPresent(String.self, forKey: .foodType),
             absorptionTime: try container.decodeIfPresent(TimeInterval.self, forKey: .absorptionTime),
             createdByCurrentApp: (try container.decodeIfPresent(Bool.self, forKey: .createdByCurrentApp)) ?? true,
+            // Absent in payloads encoded before FPU support — treat as normal carbs.
+            isFPU: (try container.decodeIfPresent(Bool.self, forKey: .isFPU)) ?? false,
             userCreatedDate: try container.decodeIfPresent(Date.self, forKey: .userCreatedDate),
             userUpdatedDate: try container.decodeIfPresent(Date.self, forKey: .userUpdatedDate)
         )
@@ -115,10 +126,15 @@ extension StoredCarbEntry: Codable {
         if !createdByCurrentApp {
             try container.encode(createdByCurrentApp, forKey: .createdByCurrentApp)
         }
+        // Only encoded when set, matching how createdByCurrentApp stays out of the
+        // payload at its default — keeps encodings for normal carbs byte-identical.
+        if isFPU {
+            try container.encode(isFPU, forKey: .isFPU)
+        }
         try container.encodeIfPresent(userCreatedDate, forKey: .userCreatedDate)
         try container.encodeIfPresent(userUpdatedDate, forKey: .userUpdatedDate)
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case uuid
         case provenanceIdentifier
@@ -129,6 +145,7 @@ extension StoredCarbEntry: Codable {
         case foodType
         case absorptionTime
         case createdByCurrentApp
+        case isFPU
         case userCreatedDate
         case userUpdatedDate
     }
