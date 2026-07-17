@@ -106,6 +106,11 @@ public extension DoseChart {
         // Grid lines
         let gridLayer = ChartGuideLinesForValuesLayer(xAxis: xAxisLayer.axis, yAxis: yAxisLayer.axis, settings: guideLinesLayerSettings, axisValuesX: Array(xAxisValues.dropFirst().dropLast()), axisValuesY: yAxisValues)
 
+        // Now line — vertical guide at the current time (L&L now_line customization)
+        let currentTimeValue = ChartAxisValueDate(date: Date(), formatter: { _ in "" })
+        let currentTimeSettings = ChartGuideLinesLayerSettings(linesColor: colors.insulinTint, linesWidth: 1.0)
+        let currentTimeLayer = ChartGuideLinesForValuesLayer(xAxis: xAxisLayer.axis, yAxis: yAxisLayer.axis, settings: currentTimeSettings, axisValuesX: [currentTimeValue], axisValuesY: [])
+
         // 0-line
         let dummyZeroChartPoint = ChartPoint(x: ChartAxisValueDouble(0), y: ChartAxisValueDouble(0))
         let zeroGuidelineLayer = ChartPointsViewsLayer(xAxis: xAxisLayer.axis, yAxis: yAxisLayer.axis, chartPoints: [dummyZeroChartPoint], viewGenerator: {(chartPointModel, layer, chart) -> UIView? in
@@ -130,6 +135,7 @@ public extension DoseChart {
 
         let layers: [ChartLayer?] = [
             gridLayer,
+            currentTimeLayer,
             xAxisLayer,
             yAxisLayer,
             zeroGuidelineLayer,

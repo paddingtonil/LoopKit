@@ -386,12 +386,23 @@ extension TherapySettingsView {
     
     private var supportSection: some View {
         Section {
-            NavigationLink(destination: DemoPlaceHolderView(appName: appName)) {
-                HStack {
-                    Text("Get help with Therapy Settings", comment: "Support button for Therapy Settings")
-                        .foregroundColor(.primary)
-                    Spacer()
-                    Disclosure()
+            if let destination = TherapyHelpRegistry.destination {
+                NavigationLink(destination: destination) {
+                    HStack {
+                        Text("Get help with Therapy Settings", comment: "Support button for Therapy Settings")
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Disclosure()
+                    }
+                }
+            } else {
+                NavigationLink(destination: DemoPlaceHolderView(appName: appName)) {
+                    HStack {
+                        Text("Get help with Therapy Settings", comment: "Support button for Therapy Settings")
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Disclosure()
+                    }
                 }
             }
         }
