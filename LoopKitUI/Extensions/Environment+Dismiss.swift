@@ -20,3 +20,11 @@ extension EnvironmentValues {
         set { self[PresentationDismissalKey.self] = newValue }
     }
 }
+
+// MARK: - Therapy Help Registry
+
+/// Static registry so Loop can inject a "Get help" destination without environment propagation.
+/// Set `TherapyHelpRegistry.destination` once at app startup; TherapySettingsView reads it directly.
+public final class TherapyHelpRegistry {
+    public static var destination: AnyView? = nil
+}

@@ -66,6 +66,10 @@ public final class ChartTableViewCell: UITableViewCell {
     public func setSubtitleTextColor(color: UIColor) {
         subtitleLabel?.textColor = color
     }
+
+    public func setSubtitleAttributedText(_ attributedText: NSAttributedString?) {
+        subtitleLabel?.attributedText = attributedText
+    }
     
     public func setAlpha(alpha: CGFloat) {
         titleLabel?.alpha = alpha
