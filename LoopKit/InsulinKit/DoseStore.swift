@@ -1306,6 +1306,35 @@ extension DoseStore {
         }
     }
 
+    /// Retrieves the circulating basal insulin (CBI) at the specified date: insulin still active from all basal delivered, including
+    /// scheduled basal and Loop's temp basals, but not boluses. Informational only; it does not affect insulin on-board.
+    ///
+    /// This operation is performed asynchronously and the completion will be executed on an arbitrary background queue.
+    ///
+    /// - Parameters:
+    ///   - date: The date of the value to retrieve
+    ///   - completion: A closure called once the value has been retrieved
+    ///   - result: The circulating basal insulin value
+    public func circulatingBasalInsulin(at date: Date, completion: @escaping (_ result: DoseStoreResult<InsulinValue>) -> Void) {
+        guard let basalProfile = self.basalProfileApplyingOverrideHistory else {
+            completion(.failure(.configurationError))
+            return
+        }
+
+        // To properly know CBI at date, we need to go back another DIA hours
+        let doseStart = date.addingTimeInterval(-longestEffectDuration)
+        getNormalizedDoseEntries(start: doseStart, end: date) { (result) in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let doses):
+                let basalHistory = basalProfile.between(start: doseStart, end: date)
+                let value = doses.circulatingBasalInsulin(at: date, basalHistory: basalHistory, insulinModelProvider: self.insulinModelProvider)
+                completion(.success(InsulinValue(startDate: date, value: value)))
+            }
+        }
+    }
+
     /// Retrieves a timeline of unabsorbed insulin values.
     ///
     /// This operation is performed asynchronously and the completion will be executed on an arbitrary background queue.

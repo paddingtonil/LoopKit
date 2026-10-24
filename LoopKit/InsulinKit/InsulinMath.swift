@@ -50,6 +50,31 @@ extension DoseEntry {
         }
     }
 
+    /// Insulin still circulating from the units this dose actually delivers, ignoring the scheduled basal rate.
+    ///
+    /// Unlike `insulinOnBoard(at:model:delta:)`, which counts only the delivery net of the scheduled basal, this counts every unit
+    /// delivered. It is informational and is not used for dosing decisions.
+    func circulatingInsulin(at date: Date, model: InsulinModel, delta: TimeInterval) -> Double {
+        let time = date.timeIntervalSince(startDate)
+        guard time >= 0 else {
+            return 0
+        }
+
+        let units: Double
+        switch type {
+        case .bolus, .suspend, .resume:
+            return 0
+        case .basal, .tempBasal:
+            units = deliveredUnits ?? programmedUnits
+        }
+
+        if endDate.timeIntervalSince(startDate) <= 1.05 * delta {
+            return units * model.percentEffectRemaining(at: time)
+        } else {
+            return units * continuousDeliveryInsulinOnBoard(at: date, model: model, delta: delta)
+        }
+    }
+
     private func continuousDeliveryGlucoseEffect(at date: Date, model: InsulinModel, delta: TimeInterval) -> Double {
         let doseDuration = endDate.timeIntervalSince(startDate)  // t1
         let time = date.timeIntervalSince(startDate)
@@ -561,6 +586,32 @@ extension Collection where Element == DoseEntry {
     var totalDelivery: Double {
         return reduce(0) { (total, dose) -> Double in
             return total + dose.unitsInDeliverableIncrements
+        }
+    }
+
+    /// Calculates the circulating basal insulin (CBI) at a date: the insulin still active from all basal delivered (scheduled and temp), excluding boluses.
+    ///
+    /// Gaps in the dose history are filled with the scheduled basal rate, suspends contribute nothing, and delivery
+    /// that has not happened yet at `date` is ignored, so reductions and resumptions by Loop are reflected as they occur.
+    /// This is informational only and is independent of `insulinOnBoard`.
+    ///
+    /// - Parameters:
+    ///   - date: The date at which to evaluate circulating basal insulin
+    ///   - basalHistory: The scheduled basal rates covering the period before `date` in which doses could still be active
+    ///   - insulinModelProvider: A factory that can provide an insulin model given an insulin type
+    ///   - delta: The integration step for continuous delivery. Defaults to 5 minutes.
+    /// - Returns: The circulating basal insulin, in units
+    public func circulatingBasalInsulin(
+        at date: Date,
+        basalHistory: [AbsoluteScheduleValue<Double>],
+        insulinModelProvider: InsulinModelProvider = PresetInsulinModelProvider(defaultRapidActingModel: nil),
+        delta: TimeInterval = TimeInterval(5*60)
+    ) -> Double {
+        let basalDoses = filter { $0.type != .bolus }.infill(with: basalHistory, endDate: date)
+
+        return basalDoses.reduce(0) { (total, dose) -> Double in
+            let delivered = dose.trimmed(to: date)
+            return total + delivered.circulatingInsulin(at: date, model: insulinModelProvider.model(for: delivered.insulinType), delta: delta)
         }
     }
 

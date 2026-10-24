@@ -1296,3 +1296,67 @@ class InsulinMathTests: XCTestCase {
     }
 
 }
+
+// MARK: - Circulating basal insulin (CBI)
+
+extension InsulinMathTests {
+    private var cbiNow: Date { Date(timeIntervalSinceReferenceDate: 800_000_000) }
+
+    private func constantBasalHistory(rate: Double, hours: Double = 8) -> [AbsoluteScheduleValue<Double>] {
+        let start = cbiNow.addingTimeInterval(-TimeInterval(hours: hours))
+        return [AbsoluteScheduleValue(startDate: start, endDate: cbiNow.addingTimeInterval(.hours(1)), value: rate)]
+    }
+
+    private func tempBasal(rate: Double, from start: TimeInterval, to end: TimeInterval) -> DoseEntry {
+        // Offsets are minutes relative to now
+        return DoseEntry(
+            type: .tempBasal,
+            startDate: cbiNow.addingTimeInterval(.minutes(start)),
+            endDate: cbiNow.addingTimeInterval(.minutes(end)),
+            value: rate,
+            unit: .unitsPerHour,
+            insulinType: insulinType
+        )
+    }
+
+    private func cbi(_ doses: [DoseEntry], rate: Double = 1.0) -> Double {
+        return doses.circulatingBasalInsulin(at: cbiNow, basalHistory: constantBasalHistory(rate: rate), insulinModelProvider: insulinModelSettings)
+    }
+
+    func testCBISteadyStateFromScheduledBasal() {
+        // With no recorded doses, scheduled basal fills the history: 1 U/h * ~2.19 h area under the rapid-acting adult curve
+        XCTAssertEqual(2.19, cbi([]), accuracy: 0.05)
+        XCTAssertEqual(2 * 2.19, cbi([], rate: 2.0), accuracy: 0.1)
+    }
+
+    func testCBIIgnoresBoluses() {
+        let bolus = DoseEntry(type: .bolus, startDate: cbiNow.addingTimeInterval(.minutes(-10)), endDate: cbiNow.addingTimeInterval(.minutes(-10)), value: 5, unit: .units, insulinType: insulinType)
+        XCTAssertEqual(cbi([]), cbi([bolus]), accuracy: 1e-9)
+    }
+
+    func testCBIDropsWhenBasalReduced() {
+        let steady = cbi([])
+        let reduced = cbi([tempBasal(rate: 0.2, from: -60, to: 0)])
+        let suspended = cbi([tempBasal(rate: 0, from: -60, to: 0)])
+
+        XCTAssertLessThan(reduced, steady)
+        XCTAssertLessThan(suspended, reduced)
+    }
+
+    func testCBIRecoversWhenBasalResumes() {
+        // A suspend ending at -30 minutes; evaluate when it ends and again 30 minutes after it has ended
+        let suspend = tempBasal(rate: 0, from: -90, to: -30)
+        let atEndOfCut = [suspend].circulatingBasalInsulin(at: cbiNow.addingTimeInterval(.minutes(-30)), basalHistory: constantBasalHistory(rate: 1.0), insulinModelProvider: insulinModelSettings)
+        let afterResume = cbi([suspend])
+
+        XCTAssertGreaterThan(afterResume, atEndOfCut)
+        XCTAssertLessThan(afterResume, cbi([]))
+    }
+
+    func testCBIIgnoresFutureDelivery() {
+        // A temp basal that has only just started contributes only what has been delivered so far
+        let ongoing = tempBasal(rate: 1.0, from: -5, to: 25)
+        let withOngoing = [tempBasal(rate: 1.0, from: -360, to: -5), ongoing].circulatingBasalInsulin(at: cbiNow, basalHistory: constantBasalHistory(rate: 1.0), insulinModelProvider: insulinModelSettings)
+        XCTAssertEqual(cbi([]), withOngoing, accuracy: 0.05)
+    }
+}
