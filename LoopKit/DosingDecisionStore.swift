@@ -253,6 +253,7 @@ public struct StoredDosingDecision {
     public var manualGlucoseSample: StoredGlucoseSample?
     public var carbsOnBoard: CarbValue?
     public var insulinOnBoard: InsulinValue?
+    public var circulatingBasalInsulin: InsulinValue?
     public var glucoseTargetRangeSchedule: GlucoseRangeSchedule?
     public var predictedGlucose: [PredictedGlucoseValue]?
     public var automaticDoseRecommendation: AutomaticDoseRecommendation?
@@ -278,6 +279,7 @@ public struct StoredDosingDecision {
                 manualGlucoseSample: StoredGlucoseSample? = nil,
                 carbsOnBoard: CarbValue? = nil,
                 insulinOnBoard: InsulinValue? = nil,
+                circulatingBasalInsulin: InsulinValue? = nil,
                 glucoseTargetRangeSchedule: GlucoseRangeSchedule? = nil,
                 predictedGlucose: [PredictedGlucoseValue]? = nil,
                 automaticDoseRecommendation: AutomaticDoseRecommendation? = nil,
@@ -302,6 +304,7 @@ public struct StoredDosingDecision {
         self.manualGlucoseSample = manualGlucoseSample
         self.carbsOnBoard = carbsOnBoard
         self.insulinOnBoard = insulinOnBoard
+        self.circulatingBasalInsulin = circulatingBasalInsulin
         self.glucoseTargetRangeSchedule = glucoseTargetRangeSchedule
         self.predictedGlucose = predictedGlucose
         self.automaticDoseRecommendation = automaticDoseRecommendation
@@ -399,6 +402,7 @@ extension StoredDosingDecision: Codable {
                   manualGlucoseSample: try container.decodeIfPresent(StoredGlucoseSample.self, forKey: .manualGlucoseSample),
                   carbsOnBoard: try container.decodeIfPresent(CarbValue.self, forKey: .carbsOnBoard),
                   insulinOnBoard: try container.decodeIfPresent(InsulinValue.self, forKey: .insulinOnBoard),
+                  circulatingBasalInsulin: try container.decodeIfPresent(InsulinValue.self, forKey: .circulatingBasalInsulin),
                   glucoseTargetRangeSchedule: try container.decodeIfPresent(GlucoseRangeSchedule.self, forKey: .glucoseTargetRangeSchedule),
                   predictedGlucose: try container.decodeIfPresent([PredictedGlucoseValue].self, forKey: .predictedGlucose),
                   automaticDoseRecommendation: try container.decodeIfPresent(AutomaticDoseRecommendation.self, forKey: .automaticDoseRecommendation),
@@ -427,6 +431,7 @@ extension StoredDosingDecision: Codable {
         try container.encodeIfPresent(manualGlucoseSample, forKey: .manualGlucoseSample)
         try container.encodeIfPresent(carbsOnBoard, forKey: .carbsOnBoard)
         try container.encodeIfPresent(insulinOnBoard, forKey: .insulinOnBoard)
+        try container.encodeIfPresent(circulatingBasalInsulin, forKey: .circulatingBasalInsulin)
         try container.encodeIfPresent(glucoseTargetRangeSchedule, forKey: .glucoseTargetRangeSchedule)
         try container.encodeIfPresent(predictedGlucose, forKey: .predictedGlucose)
         try container.encodeIfPresent(automaticDoseRecommendation, forKey: .automaticDoseRecommendation)
@@ -454,6 +459,7 @@ extension StoredDosingDecision: Codable {
         case manualGlucoseSample
         case carbsOnBoard
         case insulinOnBoard
+        case circulatingBasalInsulin
         case glucoseTargetRangeSchedule
         case predictedGlucose
         case automaticDoseRecommendation
