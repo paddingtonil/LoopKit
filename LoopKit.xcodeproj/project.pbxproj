@@ -824,6 +824,7 @@
 		C19E776A2A61FD8A003F06C5 /* IntegralRetrospectiveCorrection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19E77672A61FD8A003F06C5 /* IntegralRetrospectiveCorrection.swift */; };
 		C19E776B2A61FD8A003F06C5 /* RetrospectiveCorrection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19E77682A61FD8A003F06C5 /* RetrospectiveCorrection.swift */; };
 		C19E776C2A61FD8A003F06C5 /* StandardRetrospectiveCorrection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19E77692A61FD8A003F06C5 /* StandardRetrospectiveCorrection.swift */; };
+		C1A0D6332E9A4B0000F1A001 /* LoopKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43BA7154201E484D0058961E /* LoopKitUI.framework */; };
 		C1A174EC23DEAD670034DF11 /* DeviceLogEntry+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F8403723DB84B700673141 /* DeviceLogEntry+CoreDataClass.swift */; };
 		C1A174ED23DEAD6A0034DF11 /* DeviceLogEntry+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F8403823DB84B700673141 /* DeviceLogEntry+CoreDataProperties.swift */; };
 		C1A85A9C2A1C6E4500430101 /* HealthKitSampleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B8E6E42A1BB14E00AF38D0 /* HealthKitSampleStore.swift */; };
@@ -865,6 +866,13 @@
 		C1FAEC1D264AD6B400A3250B /* DeviceStatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1FAEC1C264AD6B400A3250B /* DeviceStatusBadge.swift */; };
 		C1FAEC1F264AE12700A3250B /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B47ECF8725DC20810024A54D /* UIImage.swift */; };
 		C1FAEC21264AEEA300A3250B /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1FAEC20264AEEA300A3250B /* UIImage.swift */; };
+		D1A0B0000000000000000008 /* Modelv4ToModelv6.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D1A0B0000000000000000005 /* Modelv4ToModelv6.xcmappingmodel */; };
+		D1A0B0000000000000000009 /* Modelv5ToModelv6.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D1A0B0000000000000000006 /* Modelv5ToModelv6.xcmappingmodel */; };
+		D1A0B000000000000000000A /* Modelv4ToModelv6.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D1A0B0000000000000000005 /* Modelv4ToModelv6.xcmappingmodel */; };
+		D1A0B000000000000000000B /* Modelv5ToModelv6.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = D1A0B0000000000000000006 /* Modelv5ToModelv6.xcmappingmodel */; };
+		D1A0B000000000000000000C /* ModelMappingv4v5Tov6Policy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0B0000000000000000007 /* ModelMappingv4v5Tov6Policy.swift */; };
+		D1A0B000000000000000000D /* ModelMappingv4v5Tov6Policy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0B0000000000000000007 /* ModelMappingv4v5Tov6Policy.swift */; };
+		D1A0B0000000000000000081 /* PersistenceControllerMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A0B0000000000000000080 /* PersistenceControllerMigrationTests.swift */; };
 		E9077D2724ACD59F0066A88D /* InformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9077D2624ACD59F0066A88D /* InformationView.swift */; };
 		E9077D2A24ACDE2C0066A88D /* CorrectionRangeInformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9077D2924ACDE2C0066A88D /* CorrectionRangeInformationView.swift */; };
 		E9086B2924B39EDC0062F5C8 /* ChartsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9086B2824B39EDC0062F5C8 /* ChartsTableViewController.swift */; };
@@ -1017,6 +1025,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 89D2047121CC7BD7001238CC;
 			remoteInfo = MockKit;
+		};
+		C1A0D6332E9A4B0000F1A002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43D8FDC21C728FDF0073BE78 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 43BA7153201E484D0058961E;
+			remoteInfo = LoopKitUI;
 		};
 		C1BECA95285902F5008075C4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1790,6 +1805,14 @@
 		C1FAC06228C7B0A100754AE2 /* reservoir_iob_test.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = reservoir_iob_test.json; sourceTree = "<group>"; };
 		C1FAEC1C264AD6B400A3250B /* DeviceStatusBadge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceStatusBadge.swift; sourceTree = "<group>"; };
 		C1FAEC20264AEEA300A3250B /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
+		D1A0B0000000000000000001 /* Modelv5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Modelv5.xcdatamodel; sourceTree = "<group>"; };
+		D1A0B0000000000000000002 /* Modelv6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Modelv6.xcdatamodel; sourceTree = "<group>"; };
+		D1A0B0000000000000000003 /* Modelv7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Modelv7.xcdatamodel; sourceTree = "<group>"; };
+		D1A0B0000000000000000004 /* Modelv8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Modelv8.xcdatamodel; sourceTree = "<group>"; };
+		D1A0B0000000000000000005 /* Modelv4ToModelv6.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = Modelv4ToModelv6.xcmappingmodel; sourceTree = "<group>"; };
+		D1A0B0000000000000000006 /* Modelv5ToModelv6.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = Modelv5ToModelv6.xcmappingmodel; sourceTree = "<group>"; };
+		D1A0B0000000000000000007 /* ModelMappingv4v5Tov6Policy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelMappingv4v5Tov6Policy.swift; sourceTree = "<group>"; };
+		D1A0B0000000000000000080 /* PersistenceControllerMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceControllerMigrationTests.swift; sourceTree = "<group>"; };
 		E9077D2624ACD59F0066A88D /* InformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationView.swift; sourceTree = "<group>"; };
 		E9077D2924ACDE2C0066A88D /* CorrectionRangeInformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectionRangeInformationView.swift; sourceTree = "<group>"; };
 		E9086B2824B39EDC0062F5C8 /* ChartsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsTableViewController.swift; sourceTree = "<group>"; };
@@ -1885,6 +1908,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				43D8FDD61C728FDF0073BE78 /* LoopKit.framework in Frameworks */,
+				C1A0D6332E9A4B0000F1A001 /* LoopKitUI.framework in Frameworks */,
 				A9D3FF1D2A6C307E000C891D /* SwiftCharts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2057,6 +2081,7 @@
 				434113BD20F2C72000D05747 /* CachedCarbObjectTests.swift */,
 				434113BB20F2C56100D05747 /* CachedGlucoseObjectTests.swift */,
 				434113B420F2BDB500D05747 /* CachedInsulinDeliveryObjectTests.swift */,
+				D1A0B0000000000000000080 /* PersistenceControllerMigrationTests.swift */,
 				A9DF02C224F6EEE400B7C988 /* DeviceLogEntryTests.swift */,
 				434113B220F2890800D05747 /* PersistenceControllerTests.swift */,
 				434113B720F2BDE800D05747 /* PersistenceControllerTestCase.swift */,
@@ -2216,6 +2241,9 @@
 				C168CA77280DD00F002BD2A7 /* Model.xcdatamodeld */,
 				C1E84B8425C62FB100623C08 /* Modelv1v4.xcmappingmodel */,
 				A9BD318124F4548900994B83 /* Modelv3EntityMigrationPolicy.swift */,
+				D1A0B0000000000000000005 /* Modelv4ToModelv6.xcmappingmodel */,
+				D1A0B0000000000000000006 /* Modelv5ToModelv6.xcmappingmodel */,
+				D1A0B0000000000000000007 /* ModelMappingv4v5Tov6Policy.swift */,
 				434113AC20F287DC00D05747 /* NSManagedObjectContext.swift */,
 				43D8FEE21C7294D50073BE78 /* PersistenceController.swift */,
 			);
@@ -3330,6 +3358,7 @@
 			);
 			dependencies = (
 				43D8FDD81C728FDF0073BE78 /* PBXTargetDependency */,
+				C1A0D6332E9A4B0000F1A003 /* PBXTargetDependency */,
 			);
 			name = LoopKitTests;
 			packageProductDependencies = (
@@ -4092,6 +4121,8 @@
 				891A3FDB224BEC0D00378B27 /* CarbSensitivitySchedule.swift in Sources */,
 				4322B773202FA2790002837D /* CarbEntry.swift in Sources */,
 				C1E84B8525C62FB100623C08 /* Modelv1v4.xcmappingmodel in Sources */,
+				D1A0B000000000000000000A /* Modelv4ToModelv6.xcmappingmodel in Sources */,
+				D1A0B000000000000000000B /* Modelv5ToModelv6.xcmappingmodel in Sources */,
 				A9498D7E23386C3300DAA9B9 /* GlucoseThreshold.swift in Sources */,
 				4322B789202FA2B30002837D /* DoseType.swift in Sources */,
 				C17F39C723CD256000FA1113 /* PersistentDeviceLog.swift in Sources */,
@@ -4115,6 +4146,7 @@
 				432CF87120D76D5A0066B889 /* GlucoseDisplayable.swift in Sources */,
 				A919889F2355016B00B75EEE /* DosingDecisionStore.swift in Sources */,
 				A9BD318224F4548900994B83 /* Modelv3EntityMigrationPolicy.swift in Sources */,
+				D1A0B000000000000000000D /* ModelMappingv4v5Tov6Policy.swift in Sources */,
 				4322B77F202FA2AF0002837D /* PersistenceController.swift in Sources */,
 				4322B78D202FA2B30002837D /* InsulinDeliveryStore.swift in Sources */,
 				A9498D8023386C3300DAA9B9 /* RemoteDataService.swift in Sources */,
@@ -4296,6 +4328,7 @@
 				A9D3FF192A6C2C85000C891D /* PredictedGlucoseChartTests.swift in Sources */,
 				1D70C40D26F01D9F00C62570 /* VersionCheckServiceTests.swift in Sources */,
 				434113B520F2BDB500D05747 /* CachedInsulinDeliveryObjectTests.swift in Sources */,
+				D1A0B0000000000000000081 /* PersistenceControllerMigrationTests.swift in Sources */,
 				43D8FE1F1C72906E0073BE78 /* QuantityScheduleTests.swift in Sources */,
 				43D8FE1D1C72906E0073BE78 /* BasalRateScheduleTests.swift in Sources */,
 				434113B320F2890800D05747 /* PersistenceControllerTests.swift in Sources */,
@@ -4424,6 +4457,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1CB895925C8E7D900782BAC /* Modelv1v4.xcmappingmodel in Sources */,
+				D1A0B0000000000000000008 /* Modelv4ToModelv6.xcmappingmodel in Sources */,
+				D1A0B0000000000000000009 /* Modelv5ToModelv6.xcmappingmodel in Sources */,
 				89AE2235228BCAAB00BDFD85 /* CarbSensitivitySchedule.swift in Sources */,
 				89AE2236228BCAAB00BDFD85 /* DailyQuantitySchedule+Override.swift in Sources */,
 				89AE2237228BCAAB00BDFD85 /* EGPSchedule.swift in Sources */,
@@ -4562,6 +4597,7 @@
 				A9E675E322713F4700E25293 /* CarbStoreError.swift in Sources */,
 				A9E675E422713F4700E25293 /* HKQuantity.swift in Sources */,
 				A9BD318324F4548900994B83 /* Modelv3EntityMigrationPolicy.swift in Sources */,
+				D1A0B000000000000000000C /* ModelMappingv4v5Tov6Policy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4645,6 +4681,11 @@
 			isa = PBXTargetDependency;
 			target = 89D2047121CC7BD7001238CC /* MockKit */;
 			targetProxy = B4CEE2E6257129780093111B /* PBXContainerItemProxy */;
+		};
+		C1A0D6332E9A4B0000F1A003 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 43BA7153201E484D0058961E /* LoopKitUI */;
+			targetProxy = C1A0D6332E9A4B0000F1A002 /* PBXContainerItemProxy */;
 		};
 		C1BECA96285902F5008075C4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -5475,8 +5516,12 @@
 			children = (
 				C168CA78280DD00F002BD2A7 /* Model.xcdatamodel */,
 				C168CA79280DD00F002BD2A7 /* Modelv4.xcdatamodel */,
+				D1A0B0000000000000000001 /* Modelv5.xcdatamodel */,
+				D1A0B0000000000000000002 /* Modelv6.xcdatamodel */,
+				D1A0B0000000000000000003 /* Modelv7.xcdatamodel */,
+				D1A0B0000000000000000004 /* Modelv8.xcdatamodel */,
 			);
-			currentVersion = C168CA79280DD00F002BD2A7 /* Modelv4.xcdatamodel */;
+			currentVersion = D1A0B0000000000000000004 /* Modelv8.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
