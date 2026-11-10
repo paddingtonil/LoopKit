@@ -18,13 +18,17 @@ public struct NewCarbEntry: CarbEntry, Equatable, RawRepresentable {
     public let startDate: Date
     public let foodType: String?
     public let absorptionTime: TimeInterval?
+    /// When false, `CarbStore.addCarbEntry` keeps the entry in the carb store (it still counts for COB and
+    /// glucose prediction) but does not write a corresponding carbohydrate sample to HealthKit.
+    public let savesToHealthKit: Bool
 
-    public init(date: Date = Date(), quantity: HKQuantity, startDate: Date, foodType: String?, absorptionTime: TimeInterval?) {
+    public init(date: Date = Date(), quantity: HKQuantity, startDate: Date, foodType: String?, absorptionTime: TimeInterval?, savesToHealthKit: Bool = true) {
         self.date = date
         self.quantity = quantity
         self.startDate = startDate
         self.foodType = foodType
         self.absorptionTime = absorptionTime
+        self.savesToHealthKit = savesToHealthKit
     }
 
     public init?(rawValue: RawValue) {
@@ -41,7 +45,8 @@ public struct NewCarbEntry: CarbEntry, Equatable, RawRepresentable {
             quantity: HKQuantity(unit: .gram(), doubleValue: grams),
             startDate: startDate,
             foodType: rawValue["foodType"] as? String,
-            absorptionTime: rawValue["absorptionTime"] as? TimeInterval
+            absorptionTime: rawValue["absorptionTime"] as? TimeInterval,
+            savesToHealthKit: rawValue["savesToHealthKit"] as? Bool ?? true
         )
     }
 
@@ -54,6 +59,10 @@ public struct NewCarbEntry: CarbEntry, Equatable, RawRepresentable {
 
         rawValue["foodType"] = foodType
         rawValue["absorptionTime"] = absorptionTime
+
+        if !savesToHealthKit {
+            rawValue["savesToHealthKit"] = false
+        }
 
         return rawValue
     }

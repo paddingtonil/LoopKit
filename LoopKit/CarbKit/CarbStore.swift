@@ -500,7 +500,9 @@ extension CarbStore {
                         return
                     }
 
-                    self.saveEntryToHealthKit(newObject)
+                    if entry.savesToHealthKit {
+                        self.saveEntryToHealthKit(newObject)
+                    }
 
                     storedEntry = StoredCarbEntry(managedObject: newObject)
                 } catch let coreDataError {
