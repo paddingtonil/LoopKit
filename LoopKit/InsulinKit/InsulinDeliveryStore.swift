@@ -33,7 +33,9 @@ public class InsulinDeliveryStore {
     /// Notification posted when dose entries were changed, either via direct add or from HealthKit
     public static let doseEntriesDidChange = NSNotification.Name(rawValue: "com.loopkit.InsulinDeliveryStore.doseEntriesDidChange")
 
-    private let queue = DispatchQueue(label: "com.loopkit.InsulinDeliveryStore.queue", qos: .utility)
+    // Pump command sessions wait for dose persistence before discarding their local doses.
+    // Match their QoS because semaphore waits cannot promote this queue automatically.
+    private let queue = DispatchQueue(label: "com.loopkit.InsulinDeliveryStore.queue", qos: .userInitiated)
 
     private let log = OSLog(category: "InsulinDeliveryStore")
 
