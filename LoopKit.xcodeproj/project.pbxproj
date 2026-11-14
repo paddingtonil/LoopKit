@@ -925,6 +925,7 @@
 		E9F54F5E25802D5E0034795E /* InsulinType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F54F5D25802D5E0034795E /* InsulinType.swift */; };
 		E9F54FBA258052130034795E /* InsulinType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F54F5D25802D5E0034795E /* InsulinType.swift */; };
 		E9F54FC62581C50D0034795E /* ExpandableDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F54FC52581C50C0034795E /* ExpandableDatePicker.swift */; };
+		F2C000000000000000000001 /* DisplayGlucosePreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C000000000000000000002 /* DisplayGlucosePreferenceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1862,6 +1863,7 @@
 		E9E5E56924D5CCE800B5DFFE /* OverrideViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideViewCell.swift; sourceTree = "<group>"; };
 		E9F54F5D25802D5E0034795E /* InsulinType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsulinType.swift; sourceTree = "<group>"; };
 		E9F54FC52581C50C0034795E /* ExpandableDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableDatePicker.swift; sourceTree = "<group>"; };
+		F2C000000000000000000002 /* DisplayGlucosePreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayGlucosePreferenceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2515,6 +2517,7 @@
 				A9DF02C824F724D900B7C988 /* CriticalEventLogTests.swift */,
 				A9BFA03D245CCCB9001E4AE3 /* DailyQuantityScheduleTests.swift */,
 				891A3FD6224BE62100378B27 /* DailyValueScheduleTests.swift */,
+				F2C000000000000000000002 /* DisplayGlucosePreferenceTests.swift */,
 				A95A1D8C246101760079378D /* DoseEntryTests.swift */,
 				C16BC0B62A5FAB6E00BDC713 /* DoseMathTests.swift */,
 				B4CEE2A4256E91290093111B /* DoseProgressTests.swift */,
@@ -4338,6 +4341,7 @@
 				A985464B251442010099C1A6 /* OutputStreamTests.swift in Sources */,
 				A971C8A223C6B17D0099BEFC /* SettingsStoreTests.swift in Sources */,
 				C16BC0B72A5FAB6F00BDC713 /* DoseMathTests.swift in Sources */,
+				F2C000000000000000000001 /* DisplayGlucosePreferenceTests.swift in Sources */,
 				C1E7035D24FFFA5C00DAB534 /* CollectionTests.swift in Sources */,
 				1DFB99D6245CB2E900DCC8C9 /* AlertTests.swift in Sources */,
 				B455F35625FC0284000ED456 /* CorrectionRangeOverridesTests.swift in Sources */,
